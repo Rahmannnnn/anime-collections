@@ -58,7 +58,7 @@ function App() {
               </Layout>
             }
           />
-          <Route path="/detail/:animeId" element={<AnimeDetail />} />
+          <Route path="/anime/:animeId" element={<AnimeDetail />} />
 
           <Route path="collections" element={<CollectionList />} />
           <Route

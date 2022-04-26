@@ -8,6 +8,7 @@ const AnimeListContainer = styled.div(
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   margin: 1rem;
+  padding-top: 2rem;
   grid-gap: 2rem 1rem;
   ${mq("sm")} {
     grid-template-columns: repeat(3, 1fr);
@@ -158,8 +159,9 @@ const AnimeList = () => {
     <div>
       <AnimeListContainer>
         {animeList.map(
-          ({ title, coverImage, bannerImage, startDate }, index) => (
+          ({ id, title, coverImage, bannerImage, startDate }, index) => (
             <AnimeItem
+              id={id}
               title={title}
               coverImage={coverImage}
               bannerImage={bannerImage}

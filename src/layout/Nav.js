@@ -11,27 +11,35 @@ const Navigation = styled.nav(
   box-shadow: ${props["scroll"] ? "2px -1px 26px rgba(16,22,26,0.75)" : ""};
   
   transition: .25s;
-  position: sticky;
+  position: fixed;
+  width: 100%;
+  left: 0;
   top: 0;
-  padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
   justify-content: flex-end;
   z-index: 2;
 
   .link {
+    padding: 1rem 0;
     color: ${theme.colors.lightGray};
     font-weight: ${theme.fontWeight.extrabold};
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     text-decoration: none;
+    margin-right: 1rem;
 
     &.active {
       color: ${theme.colors.green};
     }
 
+    :hover {
+      transition: .25s;
+      color: ${theme.colors.white};
+    }
+
     ${mq("md")} {
-      font-size: 1rem;
+      margin-right: 3rem;
+      font-size: .875rem;
     }
 }
 `

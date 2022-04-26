@@ -12,6 +12,9 @@ const theme = {
     bold: "600",
     extrabold: "800",
   },
+  fontFamily: {
+    openSans: `"Open Sans", sans-serif`,
+  },
 };
 
 export { theme };

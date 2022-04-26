@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Heading, Paragraph } from "./Typography";
 import { theme } from "../styles/Theme";
+import { useNavigate } from "react-router-dom";
 import { mq } from "../styles/Breakpoints";
 const AnimeItemContainer = styled.div(
   () => `
@@ -45,17 +46,19 @@ const AnimeItemContainer = styled.div(
 );
 
 const AnimeItem = (props) => {
-  const { title, coverImage, startDate } = props;
+  const { title, coverImage, startDate, id } = props;
+
+  let navigate = useNavigate();
+  const routeChange = () => {
+    let path = `anime/${id}`;
+    navigate(path);
+  };
 
   return (
-    <AnimeItemContainer>
+    <AnimeItemContainer onClick={routeChange}>
       {coverImage ? <img src={coverImage.large} alt={title} /> : ""}
-      <Heading fontSize={16} color={theme.colors.lightGray}>
-        {title.userPreferred}
-      </Heading>
-      <Paragraph fontSize={14} color={theme.colors.lightGray}>
-        {startDate.year}
-      </Paragraph>
+      <Heading color={theme.colors.lightGray}>{title.userPreferred}</Heading>
+      <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
     </AnimeItemContainer>
   );
 };
