@@ -1,5 +1,5 @@
 import ModalGeneral from "../layout/ModalGeneral";
-import { Button } from "../components/Button";
+import { Button } from "./Button";
 import { useEffect, useState } from "react";
 import { theme } from "../styles/Theme";
 import styled from "@emotion/styled";
@@ -36,7 +36,11 @@ const ModalAddCollectionContainer = styled.div(
           border-color: ${theme.colors.white};
         }
 
+        &.error {
+          border: 1px solid ${theme.colors.red};
+        }
       }
+      
     }
 
     .action {
@@ -53,7 +57,7 @@ const ModalAddCollectionContainer = styled.div(
   `
 );
 const ModalAddCollection = (props) => {
-  const { show, type, title } = props;
+  const { show, type, title, isValid } = props;
   const [input, setInput] = useState("");
 
   const onClose = () => {
@@ -64,9 +68,18 @@ const ModalAddCollection = (props) => {
     props.onSubmit();
   };
 
+  const onChangeInput = (input) => {
+    props.onChangeInput(input);
+    setInput(input);
+  };
+
   useEffect(() => {
     if (title && type === "edit") setInput(title);
   }, [title, type]);
+
+  useEffect(() => {
+    if (!show) setInput("");
+  }, [show]);
 
   return (
     <ModalGeneral show={show} onClose={onClose}>
@@ -75,15 +88,16 @@ const ModalAddCollection = (props) => {
           <Heading>{type === "edit" ? "Edit" : "Create"} Collection</Heading>
           <input
             type="text"
+            className={isValid ? "" : "error"}
             value={input}
-            onInput={(e) => setInput(e.target.value)}
+            onChange={(e) => onChangeInput(e.target.value)}
           />
         </div>
         <div className="action">
           <Button onClick={onClose} background={theme.colors.red}>
             Cancel
           </Button>
-          <Button onClick={onSubmit}>
+          <Button onClick={onSubmit} disabled={!isValid}>
             {type === "edit" ? "Edit" : "Create"}
           </Button>
         </div>

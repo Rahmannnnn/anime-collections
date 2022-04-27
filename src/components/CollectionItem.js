@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { theme } from "../styles/Theme";
 import { Heading, Paragraph } from "./Typography";
-import { MdModeEdit, MdDelete } from "react-icons/md";
+import { MdModeEdit, MdDelete, MdOutlinePhotoLibrary } from "react-icons/md";
 
 const Collection = styled.div(
   () => `
@@ -61,6 +61,15 @@ const CollectionItemContainer = styled.div(
       transition: .25s;
       color: ${theme.colors.white};
     }
+
+    .empty {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 100px;
+      color: ${theme.colors.lightGray}
+    }
   `
 );
 
@@ -113,7 +122,7 @@ const CollectionEmptyContainer = styled(CollectionItemContainer)(
 );
 
 const CollectionItem = (props) => {
-  const { type, title, withAction } = props;
+  const { type, title, withAction, image } = props;
 
   if (type === "empty") {
     return (
@@ -126,12 +135,22 @@ const CollectionItem = (props) => {
   return (
     <Collection>
       <CollectionItemContainer onClick={props.onAction}>
-        <ImageContainer>
+        {image ? (
+          <ImageContainer>
+            <img
+              src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg"
+              alt="banner"
+            />
+          </ImageContainer>
+        ) : (
+          <MdOutlinePhotoLibrary className="empty" />
+        )}
+        {/* <ImageContainer>
           <img
             src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg"
             alt="banner"
           />
-        </ImageContainer>
+        </ImageContainer> */}
       </CollectionItemContainer>
       <div className="description">
         <Heading onClick={props.onAction}>{title || ""}</Heading>
