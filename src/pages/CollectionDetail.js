@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import { theme } from "../styles/Theme";
 import Layout from "../layout/Layout";
 import ModalCreateCollection from "../components/ModalCreateCollection";
+import ModalConfirmation from "../components/ModalConfirmation";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -75,6 +76,9 @@ const CollectionDetail = () => {
 
   const [showModalEdit, setModalEdit] = useState(false);
   const [isValid, setValid] = useState(true);
+
+  const [showModalDelete, setModalDelete] = useState(false);
+  const [selectedAnime, setSelectedAnime] = useState({});
 
   const getCollectionDetail = () => {
     setTitle(
@@ -244,6 +248,25 @@ const CollectionDetail = () => {
     console.log("edited");
   };
 
+  const showModalConfirmation = (item) => {
+    const { id, title } = item;
+
+    if (id) {
+      setSelectedAnime({ id, title });
+      setModalDelete(true);
+    }
+  };
+
+  const closeModalConfirmation = () => {
+    setSelectedAnime({});
+    setModalDelete(false);
+  };
+
+  const onSubmitDeleteAnime = () => {
+    console.log("anime deleted");
+    closeModalConfirmation();
+  };
+
   useEffect(() => {
     getCollectionDetail();
   }, []);
@@ -266,7 +289,12 @@ const CollectionDetail = () => {
                 startDate={startDate}
               />
 
-              <Button background={theme.colors.red}>Delete</Button>
+              <Button
+                background={theme.colors.red}
+                onClick={() => showModalConfirmation({ id, title })}
+              >
+                Delete
+              </Button>
             </div>
           )
         )}
@@ -280,6 +308,14 @@ const CollectionDetail = () => {
         onChangeInput={onChangeInput}
         onClose={() => setModalEdit(false)}
         onSubmit={onSubmitEditCollection}
+      />
+
+      <ModalConfirmation
+        show={showModalDelete}
+        title={selectedAnime?.title?.userPreferred}
+        onClose={closeModalConfirmation}
+        onSubmit={onSubmitDeleteAnime}
+        actionText="delete"
       />
     </Layout>
   );
