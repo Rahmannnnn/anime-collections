@@ -11,9 +11,36 @@ import { Global, css } from "@emotion/react";
 
 import { theme } from "./styles/Theme";
 
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+  from,
+} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+
+const errorLink = onError(({ graphqlErrors, networkError }) => {
+  if (graphqlErrors) {
+    graphqlErrors.map(({ message }) => {
+      console.error(`Graphql error ${message}`);
+    });
+  }
+});
+
+const link = from([
+  errorLink,
+  new HttpLink({ uri: "https://graphql.anilist.co" }),
+]);
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link,
+});
+
 function App() {
   return (
-    <>
+    <ApolloProvider client={client}>
       <Global
         styles={css`
           body {
@@ -76,7 +103,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </ApolloProvider>
   );
 }
 

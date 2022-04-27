@@ -1,14 +1,20 @@
 import styled from "@emotion/styled";
+
 import { Heading, Paragraph } from "./Typography";
+
 import { theme } from "../styles/Theme";
-import { useNavigate } from "react-router-dom";
 import { mq } from "../styles/Breakpoints";
+
 const AnimeItemContainer = styled.div(
   () => `
   cursor: pointer;
   display: flex;
   flex-direction: column;
   text-align: center;
+
+  a {
+    text-decoration: none;
+  }
 
   img {
     border-radius: .5rem;
@@ -48,17 +54,13 @@ const AnimeItemContainer = styled.div(
 const AnimeItem = (props) => {
   const { title, coverImage, startDate, id } = props;
 
-  let navigate = useNavigate();
-  const routeChange = () => {
-    let path = `../anime/${id}`;
-    navigate(path, { replace: true });
-  };
-
   return (
-    <AnimeItemContainer onClick={routeChange}>
-      {coverImage ? <img src={coverImage.large} alt={title} /> : ""}
-      <Heading color={theme.colors.lightGray}>{title.userPreferred}</Heading>
-      <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
+    <AnimeItemContainer>
+      <a href={"/anime/" + id}>
+        {coverImage ? <img src={coverImage.large} alt={title} /> : ""}
+        <Heading color={theme.colors.lightGray}>{title.userPreferred}</Heading>
+        <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
+      </a>
     </AnimeItemContainer>
   );
 };

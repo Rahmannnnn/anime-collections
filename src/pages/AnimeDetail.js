@@ -1,11 +1,22 @@
-import styled from "@emotion/styled";
-import { mq } from "../styles/Breakpoints";
-import Layout from "../layout/Layout";
-import { theme } from "../styles/Theme";
-import { Heading, Paragraph, Subheading } from "../components/Typography";
-import { Button } from "../components/Button";
-// import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+
+import { GET_ANIME_DETAIL } from "../graphql/Queries";
+
+import { mq } from "../styles/Breakpoints";
+import styled from "@emotion/styled";
+import { theme } from "../styles/Theme";
+
+import AnimeItem from "../components/AnimeItem";
+import Layout from "../layout/Layout";
+import ModalAddToCollection from "../components/ModalAddToCollection";
+import ModalCreateCollection from "../components/ModalCreateCollection";
+import { Button } from "../components/Button";
+import { Heading, Paragraph, Subheading } from "../components/Typography";
+
+import { MONTH_SHORT } from "../constants/date";
+
 const Banner = styled.div(
   (props) => `
   position: relative;
@@ -64,6 +75,20 @@ const DescriptionContainer = styled.div(
     margin: 0 auto;
     padding: .5rem;
     border-radius: .5rem;
+
+    .text {
+      margin-bottom: 1rem;
+      font-size: .75rem;
+      color: ${theme.colors.white};
+
+      ${mq("md")} {
+        font-size: .875rem;
+      }
+
+      &_genres {
+        margin-bottom: 1rem;
+      }
+    }
   }
 
   ${mq("md")} {
@@ -103,181 +128,132 @@ const DescriptionContainer = styled.div(
 const RecommendationsContainer = styled.div(
   () => `
     min-height: 100px;
+
+    .recommendation_list {
+      margin: 1rem 0;
+      display: grid;
+      grid-gap: .5rem;
+      grid-template-columns: repeat(2, 1fr);
+      
+      ${mq("md")} {
+        grid-gap: 1rem;
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
   `
 );
 
 const AnimeDetail = () => {
   // TODO: Handle ID Anime to Call API
-  // let params = useParams();
+  let params = useParams();
 
-  const [item, setItem] = useState();
+  const { error, loading, data } = useQuery(GET_ANIME_DETAIL, {
+    variables: { id: parseInt(params.animeId) },
+  });
+
+  // const [item, setItem] = useState();
   const [width, setWidth] = useState(0);
 
   // TODO: set value when call API
-  // const [status, setStatus] = useState('');
-  // const [startDate, setStartDate] = useState('');
-  // const [popularity, setPopularity] = useState(0);
-  // const [season, setSeason] = useState("");
-  // const [averageScore, setAverageScore] = useState(0);
-  // const [meanScore, setMeanScore] = useState(0);
-  // const [genres, setGenres] = useState([]);
-  // const [title, setTitle] = useState({});
-  // const [bannerImage, setBannerImage] = useState("");
-  // const [coverImage, setCoverImage] = useState({});
-  // const [recommendations, setRecommendations] = useState([]);
+  const [status, setStatus] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [popularity, setPopularity] = useState(0);
+  const [season, setSeason] = useState("");
+  const [averageScore, setAverageScore] = useState(0);
+  const [meanScore, setMeanScore] = useState(0);
+  const [genres, setGenres] = useState([]);
+  const [title, setTitle] = useState({});
+  const [description, setDescription] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
+  const [coverImage, setCoverImage] = useState({});
+  const [recommendations, setRecommendations] = useState([]);
+  const [source, setSource] = useState("");
 
-  const getAnimeDetail = () => {
-    setItem({
-      id: 21,
-      title: {
-        english: "ONE PIECE",
-        native: "ONE PIECE",
-      },
-      description:
-        "Gold Roger was known as the Pirate King, the strongest and most infamous being to have sailed the Grand Line. The capture and death of Roger by the World Government brought a change throughout the world. His last words before his death revealed the location of the greatest treasure in the world, One Piece. It was this revelation that brought about the Grand Age of Pirates, men who dreamed of finding One Piece (which promises an unlimited amount of riches and fame), and quite possibly the most coveted of titles for the person who found it, the title of the Pirate King.<br><br>\nEnter Monkey D. Luffy, a 17-year-old boy that defies your standard definition of a pirate. Rather than the popular persona of a wicked, hardened, toothless pirate who ransacks villages for fun, Luffy’s reason for being a pirate is one of pure wonder; the thought of an exciting adventure and meeting new and intriguing people, along with finding One Piece, are his reasons of becoming a pirate. Following in the footsteps of his childhood hero, Luffy and his crew travel across the Grand Line, experiencing crazy adventures, unveiling dark mysteries and battling strong enemies, all in order to reach One Piece.<br><br>\n<b>*This includes following special episodes:</b><br>\n- Chopperman to the Rescue! Protect the TV Station by the Shore! (Episode 336)<br>\n- The Strongest Tag-Team! Luffy and Toriko's Hard Struggle! (Episode 492)<br>\n- Team Formation! Save Chopper (Episode 542)<br>\n- History's Strongest Collaboration vs. Glutton of the Sea (Episode 590)<br>\n- 20th Anniversary! Special Romance Dawn (Episode 907)",
-      genres: ["Action", "Adventure", "Comedy", "Drama", "Fantasy"],
-      coverImage: {
-        extraLarge:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-        large:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-        medium:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        color: "#e4a15d",
-      },
-      bannerImage:
-        "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21-wf37VakJmZqs.jpg",
-      recommendations: {
-        nodes: [
-          {
-            mediaRecommendation: {
-              id: 11061,
-              title: {
-                romaji: "HUNTER×HUNTER (2011)",
-                english: "Hunter x Hunter (2011)",
-                native: "HUNTER×HUNTER (2011)",
-                userPreferred: "HUNTER×HUNTER (2011)",
-              },
-              coverImage: {
-                extraLarge:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11061-sIpBprNRfzCe.png",
-                large:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx11061-sIpBprNRfzCe.png",
-                medium:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx11061-sIpBprNRfzCe.png",
-                color: "#f1d65d",
-              },
-            },
-          },
-          {
-            mediaRecommendation: {
-              id: 20,
-              title: {
-                romaji: "NARUTO",
-                english: "Naruto",
-                native: "NARUTO -ナルト-",
-                userPreferred: "NARUTO",
-              },
-              coverImage: {
-                extraLarge:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-E3YH5W6sz6H7.jpg",
-                large:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx20-E3YH5W6sz6H7.jpg",
-                medium:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx20-E3YH5W6sz6H7.jpg",
-                color: "#e4e450",
-              },
-            },
-          },
-          {
-            mediaRecommendation: {
-              id: 1735,
-              title: {
-                romaji: "NARUTO: Shippuuden",
-                english: "Naruto: Shippuden",
-                native: "NARUTO -ナルト- 疾風伝",
-                userPreferred: "NARUTO: Shippuuden",
-              },
-              coverImage: {
-                extraLarge:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1735-80JNLAlnxrKj.png",
-                large:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx1735-80JNLAlnxrKj.png",
-                medium:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx1735-80JNLAlnxrKj.png",
-                color: "#e4865d",
-              },
-            },
-          },
-          {
-            mediaRecommendation: {
-              id: 97940,
-              title: {
-                romaji: "Black Clover",
-                english: "Black Clover",
-                native: "ブラッククローバー",
-                userPreferred: "Black Clover",
-              },
-              coverImage: {
-                extraLarge:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97940-bPydLjny8PUw.png",
-                large:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx97940-bPydLjny8PUw.png",
-                medium:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx97940-bPydLjny8PUw.png",
-                color: "#6b6b1a",
-              },
-            },
-          },
-          {
-            mediaRecommendation: {
-              id: 223,
-              title: {
-                romaji: "Dragon Ball",
-                english: "Dragon Ball",
-                native: "ドラゴンボール",
-                userPreferred: "Dragon Ball",
-              },
-              coverImage: {
-                extraLarge:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx223-Ld6vrSnd081L.png",
-                large:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx223-Ld6vrSnd081L.png",
-                medium:
-                  "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx223-Ld6vrSnd081L.png",
-                color: "#e49350",
-              },
-            },
-          },
-        ],
-      },
-      episodes: null,
-      status: "RELEASING",
-      startDate: {
-        year: 1999,
-        month: 10,
-        day: 20,
-      },
-      endDate: {
-        year: null,
-        month: null,
-        day: null,
-      },
-      averageScore: 87,
-      season: "FALL",
-      seasonYear: 1999,
-      popularity: 330742,
-    });
-  };
+  const [showModalAddCollection, setshowModalAddCollection] = useState(false);
+  const [showModalCreateCollection, setshowModalCreateCollection] =
+    useState(false);
+  const [isValid, setValid] = useState(true);
 
   const handleResize = () => {
     const currentWidth = window.screen.width;
     setWidth(currentWidth);
   };
 
+  const showModalAdd = () => {
+    setshowModalAddCollection(true);
+  };
+
+  const closeModalAdd = () => {
+    setshowModalAddCollection(false);
+  };
+
+  const submitModalAdd = (collectionsList) => {
+    console.log(collectionsList);
+    closeModalAdd();
+  };
+
+  const showModalCreate = () => {
+    closeModalAdd();
+    setshowModalCreateCollection(true);
+  };
+
+  const closeModalCreate = () => {
+    setshowModalCreateCollection(false);
+    showModalAdd();
+  };
+
+  const submitModalCreate = () => {
+    console.log("create");
+    closeModalCreate();
+  };
+
+  const onChangeInput = (input) => {
+    console.log(input);
+  };
+
   useEffect(() => {
-    getAnimeDetail();
+    setValid(true);
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      const {
+        bannerImage,
+        coverImage,
+        title,
+        description,
+        recommendations,
+        status,
+        startDate,
+        popularity,
+        season,
+        averageScore,
+        meanScore,
+        genres,
+        source,
+      } = data.Media;
+
+      setBannerImage(bannerImage);
+      setCoverImage(coverImage);
+      setTitle(title);
+      setDescription(description);
+
+      setStatus(status);
+      setStartDate(
+        `${MONTH_SHORT[startDate.month - 1]} ${startDate.day}, ${
+          startDate.year
+        }`
+      );
+      setPopularity(popularity);
+      setSeason(season);
+      setAverageScore(averageScore);
+      setMeanScore(meanScore);
+      setGenres(genres);
+      setSource(source);
+
+      setRecommendations(recommendations.nodes);
+    }
+  }, [data]);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize, { passive: true });
@@ -288,92 +264,145 @@ const AnimeDetail = () => {
     };
   }, []);
 
-  return (
-    <div className="header">
-      {item ? (
-        <>
-          <Banner bannerImage={item.bannerImage} />
-          <Layout>
-            <DescriptionContainer>
-              <div className="desc">
-                <img
-                  src={
-                    width > 992
-                      ? item.coverImage.extraLarge
-                      : width <= 992 && width > 500
-                      ? item.coverImage.large
-                      : item.coverImage.medium
-                  }
-                  alt="gambar"
-                />
+  if (loading) return <p></p>;
 
-                <Button
-                  background={theme.colors.green}
-                  color={theme.colors.black}
-                >
-                  Add to collection
-                </Button>
-              </div>
-              <div className="desc">
-                <Heading>{item.title.english}</Heading>
+  if (error) return <Navigate to="/" />;
+
+  return (
+    <>
+      <Banner bannerImage={bannerImage} />
+      <Layout>
+        <DescriptionContainer>
+          <div className="desc">
+            <img
+              src={
+                width > 992
+                  ? coverImage.extraLarge
+                  : width <= 992 && width > 500
+                  ? coverImage.large
+                  : coverImage.medium
+              }
+              alt="gambar"
+            />
+
+            <Button
+              background={theme.colors.green}
+              color={theme.colors.black}
+              onClick={showModalAdd}
+            >
+              Add to collection
+            </Button>
+          </div>
+          <div className="desc">
+            <Heading>{title.english}</Heading>
+            <Paragraph
+              dangerouslySetInnerHTML={{
+                __html: description,
+              }}
+            ></Paragraph>
+          </div>
+          <div className="left">
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Status
+            </Subheading>
+            <Paragraph className="text">{status || "-"}</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Start Date
+            </Subheading>
+            <Paragraph className="text">{startDate || "-"}</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Popularity
+            </Subheading>
+            <Paragraph className="text">{popularity || 0}</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Season
+            </Subheading>
+            <Paragraph className="text">{season || "-"}</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Average Score
+            </Subheading>
+            <Paragraph className="text">{averageScore || 0}%</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Mean Score
+            </Subheading>
+            <Paragraph className="text">{meanScore || 0}%</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Genres
+            </Subheading>
+            <div className="text_genres">
+              {genres.map((element, index) => (
                 <Paragraph
-                  dangerouslySetInnerHTML={{
-                    __html: item.description,
-                  }}
-                ></Paragraph>
-              </div>
-              <div className="left">
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Status
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Start Date
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Popularity
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Season
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Average Score
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Mean Score
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Genres
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Source
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Romaji
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  English
-                </Subheading>
-                <Subheading fontSize={12} color={theme.colors.lightGray}>
-                  Native
-                </Subheading>
-              </div>
-              <div className="right">
+                  fontSize={14}
+                  color={theme.colors.white}
+                  key={"genre" + index}
+                >
+                  {element || "-"}
+                </Paragraph>
+              ))}
+            </div>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Source
+            </Subheading>
+            <Paragraph className="text">{source || "-"}</Paragraph>
+            {}
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Romaji
+            </Subheading>
+            <Paragraph className="text">{title.romaji || "-"}</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              English
+            </Subheading>
+            <Paragraph className="text">{title.english || "-"}</Paragraph>
+            <Subheading fontSize={12} color={theme.colors.lightGray}>
+              Native
+            </Subheading>
+            <Paragraph className="text">{title.native || "-"}</Paragraph>
+          </div>
+          <div className="right">
+            <Subheading fontSize={14} color={theme.colors.lightGray}>
+              Collections
+            </Subheading>
+            {recommendations.length ? (
+              <RecommendationsContainer>
                 <Subheading fontSize={14} color={theme.colors.lightGray}>
-                  Collections
+                  Recommendations
                 </Subheading>
-                <RecommendationsContainer>
-                  <Subheading fontSize={14} color={theme.colors.lightGray}>
-                    Recommendations
-                  </Subheading>
-                </RecommendationsContainer>
-              </div>
-            </DescriptionContainer>
-          </Layout>
-        </>
-      ) : (
-        ""
-      )}
-    </div>
+                <div className="recommendation_list">
+                  {recommendations.map(({ mediaRecommendation }, index) => (
+                    <AnimeItem
+                      id={mediaRecommendation.id}
+                      title={mediaRecommendation.title}
+                      coverImage={mediaRecommendation.coverImage}
+                      startDate={mediaRecommendation.startDate}
+                      key={index}
+                    />
+                  ))}
+                </div>
+              </RecommendationsContainer>
+            ) : (
+              ""
+            )}
+          </div>
+        </DescriptionContainer>
+
+        <ModalAddToCollection
+          show={showModalAddCollection}
+          onClose={closeModalAdd}
+          onSubmit={submitModalAdd}
+          onAdd={showModalCreate}
+        />
+
+        <ModalCreateCollection
+          show={showModalCreateCollection}
+          title=""
+          type="create"
+          isValid={isValid}
+          onChangeInput={onChangeInput}
+          onClose={closeModalCreate}
+          onSubmit={submitModalCreate}
+        />
+      </Layout>
+    </>
   );
 };
 

@@ -78,6 +78,11 @@ const CollectionList = () => {
     closeModal("create");
   };
 
+  const onSubmitDeleteCollection = () => {
+    console.log("deleted");
+    closeModal("delete");
+  };
+
   const showModalCreate = () => {
     setSelectedCollection({});
     setModalType("create");
@@ -150,6 +155,7 @@ const CollectionList = () => {
         show={showConfirmation}
         title={selectedCollection?.title}
         onClose={() => closeModal("delete")}
+        onSubmit={onSubmitDeleteCollection}
         actionText="delete"
       />
     </CollectionListContainer>

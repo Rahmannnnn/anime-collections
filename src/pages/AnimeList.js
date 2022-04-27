@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AnimeItem from "../components/AnimeItem";
 import { mq } from "../styles/Breakpoints";
+
+import { useQuery } from "@apollo/client";
+import { GET_ANIME_LIST } from "../graphql/Queries";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -25,153 +28,29 @@ const AnimeListContainer = styled.div(
 );
 
 const AnimeList = () => {
-  const [animeList, setAnimeList] = useState([]);
+  const [page, setPage] = useState(1);
 
-  const getAnimeList = () => {
-    setAnimeList([
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
+  const { error, loading, data } = useQuery(GET_ANIME_LIST, {
+    fetchPolicy: "network-only",
+    variables: { page: page },
+  });
 
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 8818,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage: null,
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 881,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage: null,
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 88,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage: null,
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 8,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage: null,
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-    ]);
-
-    setAnimeList((valueBefore) => valueBefore.concat(valueBefore));
-  };
-
-  useEffect(() => {
-    getAnimeList();
-  }, []);
+  if (loading) return <p>Loading</p>;
+  if (error) return <p>Error :(</p>;
 
   return (
-    <div>
-      <AnimeListContainer>
-        {animeList.map(
-          ({ id, title, coverImage, bannerImage, startDate }, index) => (
-            <AnimeItem
-              id={id}
-              title={title}
-              coverImage={coverImage}
-              bannerImage={bannerImage}
-              startDate={startDate}
-              key={index}
-            />
-          )
-        )}
-      </AnimeListContainer>
-    </div>
+    <AnimeListContainer>
+      <button onClick={() => setPage((prev) => prev + 1)}>Next</button>
+      {data.Page.media.map(({ id, title, coverImage, startDate }, index) => (
+        <AnimeItem
+          id={id}
+          title={title}
+          coverImage={coverImage}
+          startDate={startDate}
+          key={index}
+        />
+      ))}
+    </AnimeListContainer>
   );
 };
 
