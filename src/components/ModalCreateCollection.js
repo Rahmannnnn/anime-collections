@@ -5,7 +5,7 @@ import { theme } from "../styles/Theme";
 import styled from "@emotion/styled";
 import { Heading } from "./Typography";
 
-const ModalAddCollectionContainer = styled.div(
+const ModalCreateCollectionContainer = styled.div(
   () => `
     display: flex;
     flex-direction: column;
@@ -56,7 +56,7 @@ const ModalAddCollectionContainer = styled.div(
     }
   `
 );
-const ModalAddCollection = (props) => {
+const ModalCreateCollection = (props) => {
   const { show, type, title, isValid } = props;
   const [input, setInput] = useState("");
 
@@ -74,8 +74,8 @@ const ModalAddCollection = (props) => {
   };
 
   useEffect(() => {
-    if (title && type === "edit") setInput(title);
-  }, [title, type]);
+    if (title && type === "edit" && show) setInput(title);
+  }, [title, type, show]);
 
   useEffect(() => {
     if (!show) setInput("");
@@ -83,7 +83,7 @@ const ModalAddCollection = (props) => {
 
   return (
     <ModalGeneral show={show} onClose={onClose}>
-      <ModalAddCollectionContainer>
+      <ModalCreateCollectionContainer>
         <div className="content">
           <Heading>{type === "edit" ? "Edit" : "Create"} Collection</Heading>
           <input
@@ -101,9 +101,9 @@ const ModalAddCollection = (props) => {
             {type === "edit" ? "Edit" : "Create"}
           </Button>
         </div>
-      </ModalAddCollectionContainer>
+      </ModalCreateCollectionContainer>
     </ModalGeneral>
   );
 };
 
-export default ModalAddCollection;
+export default ModalCreateCollection;

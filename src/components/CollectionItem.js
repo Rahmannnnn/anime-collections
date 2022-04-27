@@ -137,20 +137,11 @@ const CollectionItem = (props) => {
       <CollectionItemContainer onClick={props.onAction}>
         {image ? (
           <ImageContainer>
-            <img
-              src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg"
-              alt="banner"
-            />
+            <img src={image} alt="banner" />
           </ImageContainer>
         ) : (
           <MdOutlinePhotoLibrary className="empty" />
         )}
-        {/* <ImageContainer>
-          <img
-            src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg"
-            alt="banner"
-          />
-        </ImageContainer> */}
       </CollectionItemContainer>
       <div className="description">
         <Heading onClick={props.onAction}>{title || ""}</Heading>

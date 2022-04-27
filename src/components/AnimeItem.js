@@ -50,8 +50,8 @@ const AnimeItem = (props) => {
 
   let navigate = useNavigate();
   const routeChange = () => {
-    let path = `anime/${id}`;
-    navigate(path);
+    let path = `../anime/${id}`;
+    navigate(path, { replace: true });
   };
 
   return (
