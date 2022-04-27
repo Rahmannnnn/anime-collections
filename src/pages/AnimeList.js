@@ -5,6 +5,8 @@ import { mq } from "../styles/Breakpoints";
 
 import { useQuery } from "@apollo/client";
 import { GET_ANIME_LIST } from "../graphql/Queries";
+import Layout from "../layout/Layout";
+import Loading from "../components/Loading";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -35,22 +37,23 @@ const AnimeList = () => {
     variables: { page: page },
   });
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
   return (
-    <AnimeListContainer>
-      <button onClick={() => setPage((prev) => prev + 1)}>Next</button>
-      {data.Page.media.map(({ id, title, coverImage, startDate }, index) => (
-        <AnimeItem
-          id={id}
-          title={title}
-          coverImage={coverImage}
-          startDate={startDate}
-          key={index}
-        />
-      ))}
-    </AnimeListContainer>
+    <Layout>
+      <AnimeListContainer>
+        {data.Page.media.map(({ id, title, coverImage, startDate }, index) => (
+          <AnimeItem
+            id={id}
+            title={title}
+            coverImage={coverImage}
+            startDate={startDate}
+            key={index}
+          />
+        ))}
+      </AnimeListContainer>
+    </Layout>
   );
 };
 

@@ -7,7 +7,7 @@ import { mq } from "../styles/Breakpoints";
 
 const Navigation = styled.nav(
   (props) => `
-  background: ${props["scroll"] ? theme.colors.black : "transparent"};
+  background: ${props["scroll"] ? theme.colors.black : "rgba(28, 28, 39, .5)"};
   box-shadow: ${props["scroll"] ? "2px -1px 26px rgba(16,22,26,0.75)" : ""};
   
   transition: .25s;
@@ -22,7 +22,7 @@ const Navigation = styled.nav(
 
   .link {
     padding: 1rem 0;
-    color: ${theme.colors.lightGray};
+    color: ${theme.colors.white};
     font-weight: ${theme.fontWeight.extrabold};
     font-size: 0.75rem;
     text-decoration: none;

@@ -4,6 +4,7 @@ import { Heading, Paragraph } from "./Typography";
 
 import { theme } from "../styles/Theme";
 import { mq } from "../styles/Breakpoints";
+import { Link } from "react-router-dom";
 
 const AnimeItemContainer = styled.div(
   () => `
@@ -56,11 +57,11 @@ const AnimeItem = (props) => {
 
   return (
     <AnimeItemContainer>
-      <a href={"/anime/" + id}>
+      <Link to={`../anime/${id}`}>
         {coverImage ? <img src={coverImage.large} alt={title} /> : ""}
         <Heading color={theme.colors.lightGray}>{title.userPreferred}</Heading>
         <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
-      </a>
+      </Link>
     </AnimeItemContainer>
   );
 };

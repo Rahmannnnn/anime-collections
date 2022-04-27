@@ -16,6 +16,7 @@ import { Button } from "../components/Button";
 import { Heading, Paragraph, Subheading } from "../components/Typography";
 
 import { MONTH_SHORT } from "../constants/date";
+import Loading from "../components/Loading";
 
 const Banner = styled.div(
   (props) => `
@@ -24,7 +25,7 @@ const Banner = styled.div(
   background-image: url('${props ? props.bannerImage : ""}');
   background-repeat: no-repeat;
   background-position: center;
-  background-color: ${theme.colors.white};
+  background-color: ${theme.colors.darkBlue};
   height: 40vh;
 `
 );
@@ -148,6 +149,7 @@ const AnimeDetail = () => {
   let params = useParams();
 
   const { error, loading, data } = useQuery(GET_ANIME_DETAIL, {
+    fetchPolicy: "network-only",
     variables: { id: parseInt(params.animeId) },
   });
 
@@ -264,7 +266,7 @@ const AnimeDetail = () => {
     };
   }, []);
 
-  if (loading) return <p></p>;
+  if (loading) return <Loading />;
 
   if (error) return <Navigate to="/" />;
 

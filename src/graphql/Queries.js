@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_ANIME_LIST = gql`
-  query GetAnimeList($page: Int) {
+  query GetAnimeList($page: Int!) {
     Page(page: $page, perPage: 10) {
       pageInfo {
         total
@@ -15,12 +15,14 @@ export const GET_ANIME_LIST = gql`
         title {
           english
           native
+          romaji
           userPreferred
         }
         coverImage {
           extraLarge
           large
           medium
+          color
         }
         startDate {
           year
@@ -33,12 +35,14 @@ export const GET_ANIME_LIST = gql`
 `;
 
 export const GET_ANIME_DETAIL = gql`
-  query ($id: Int!) {
+  query GetAnimeDetail($id: Int!) {
     Media(id: $id) {
       id
       title {
+        romaji
         english
         native
+        userPreferred
       }
       description
       genres
