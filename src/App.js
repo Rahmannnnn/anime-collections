@@ -60,7 +60,14 @@ function App() {
           />
           <Route path="/anime/:animeId" element={<AnimeDetail />} />
 
-          <Route path="collections" element={<CollectionList />} />
+          <Route
+            path="collections"
+            element={
+              <Layout>
+                <CollectionList />
+              </Layout>
+            }
+          />
           <Route
             path="collections/:collectionId"
             element={<CollectionDetail />}
