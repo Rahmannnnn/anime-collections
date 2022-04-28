@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import CollectionItem from "../components/CollectionItem";
 import ModalCreateCollection from "../components/ModalCreateCollection";
@@ -10,6 +10,7 @@ import Layout from "../layout/Layout";
 
 import { mq } from "../styles/Breakpoints";
 import { indexArrayOfObject } from "../utils/Array";
+import { theme } from "../styles/Theme";
 
 const CollectionListContainer = styled.div(
   () => `
@@ -153,20 +154,28 @@ const CollectionList = () => {
       <CollectionListContainer>
         <CollectionItem type="empty" onAction={showModalCreate} />
         {collectionsList.map((element) => (
-          <CollectionItem
-            id={element.id}
-            title={element.title}
+          <Link
+            style={{
+              textDecoration: "none",
+              color: theme.colors.darkBlue,
+            }}
+            to={`../collections/${element.id}`}
             key={"collection-item-collection-list-" + element.id}
-            withAction={true}
-            image={
-              element.anime_list.length
-                ? element.anime_list[0].coverImage.large
-                : ""
-            }
-            onAction={() => toDetail(element.id)}
-            onEdit={() => showModalEdit(element)}
-            onDelete={() => showModalDelete(element)}
-          />
+          >
+            <CollectionItem
+              id={element.id}
+              title={element.title}
+              withAction={true}
+              image={
+                element.anime_list.length
+                  ? element.anime_list[0].coverImage.large
+                  : ""
+              }
+              onAction={() => toDetail(element.id)}
+              onEdit={() => showModalEdit(element)}
+              onDelete={() => showModalDelete(element)}
+            />
+          </Link>
         ))}
 
         <ModalCreateCollection

@@ -57,7 +57,13 @@ const AnimeItem = (props) => {
 
   return (
     <AnimeItemContainer>
-      <Link to={`../anime/${id}`}>
+      <Link
+        style={{
+          textDecoration: "none",
+          color: theme.colors.darkBlue,
+        }}
+        to={`../anime/${id}`}
+      >
         {coverImage ? <img src={coverImage.large} alt={title} /> : ""}
         <Heading color={theme.colors.lightGray}>{title.userPreferred}</Heading>
         <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>

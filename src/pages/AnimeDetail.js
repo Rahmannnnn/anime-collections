@@ -444,6 +444,10 @@ const AnimeDetail = () => {
                 <div className="collections_list">
                   {animeCollections.map((element) => (
                     <Link
+                      style={{
+                        textDecoration: "none",
+                        color: theme.colors.darkBlue,
+                      }}
                       to={`../collections/${element.id}`}
                       key={"collection-item-anime-detail-" + element.id}
                     >

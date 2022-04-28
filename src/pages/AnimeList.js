@@ -7,6 +7,7 @@ import { useQuery } from "@apollo/client";
 import { GET_ANIME_LIST } from "../graphql/Queries";
 import Layout from "../layout/Layout";
 import Loading from "../components/Loading";
+import Pagination from "../components/Pagination";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -29,13 +30,29 @@ const AnimeListContainer = styled.div(
 `
 );
 
+const AnimeItemContainer = styled.div(
+  () => `
+    position: relative;
+
+    .checkbox {
+      position: absolute;
+      top: 2.5%;
+      left: 15%;
+    }
+  `
+);
+
 const AnimeList = () => {
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
 
   const { error, loading, data } = useQuery(GET_ANIME_LIST, {
     fetchPolicy: "network-only",
     variables: { page: page },
   });
+
+  const pagination = (number) => {
+    setPage(number);
+  };
 
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
@@ -44,15 +61,22 @@ const AnimeList = () => {
     <Layout>
       <AnimeListContainer>
         {data.Page.media.map(({ id, title, coverImage, startDate }, index) => (
-          <AnimeItem
-            id={id}
-            title={title}
-            coverImage={coverImage}
-            startDate={startDate}
-            key={"anime-list-home-" + index}
-          />
+          <AnimeItemContainer>
+            <AnimeItem
+              id={id}
+              title={title}
+              coverImage={coverImage}
+              startDate={startDate}
+              key={"anime-list-home-" + index}
+            />
+          </AnimeItemContainer>
         ))}
       </AnimeListContainer>
+      <Pagination
+        currentPage={page}
+        totalPage={data.Page.pageInfo.lastPage}
+        setPage={pagination}
+      />
     </Layout>
   );
 };
