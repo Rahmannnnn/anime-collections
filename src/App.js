@@ -1,6 +1,5 @@
 import React from "react";
 import Nav from "./layout/Nav";
-import Layout from "./layout/Layout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {
   AnimeDetail,
@@ -53,14 +52,7 @@ function App() {
           <Route exact path="/" element={<AnimeList />} />
           <Route path="/anime/:animeId" element={<AnimeDetail />} />
 
-          <Route
-            path="collections"
-            element={
-              <Layout>
-                <CollectionList />
-              </Layout>
-            }
-          />
+          <Route path="collections" element={<CollectionList />} />
           <Route
             path="collections/:collectionId"
             element={<CollectionDetail />}

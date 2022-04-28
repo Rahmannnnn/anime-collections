@@ -6,23 +6,25 @@ import { useNavigate } from "react-router-dom";
 import CollectionItem from "../components/CollectionItem";
 import ModalCreateCollection from "../components/ModalCreateCollection";
 import ModalConfirmation from "../components/ModalConfirmation";
+import Layout from "../layout/Layout";
 
 import { mq } from "../styles/Breakpoints";
+import { indexArrayOfObject } from "../utils/Array";
 
 const CollectionListContainer = styled.div(
   () => `
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   margin: 1rem;
   padding-top: 2rem;
   grid-gap: 2rem;
 
   ${mq("sm")} {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   
   ${mq("md")} {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 `
 );
@@ -40,46 +42,54 @@ const CollectionList = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const getCollectionsList = () => {
-    setCollectionsList([
-      {
-        id: 1,
-        title: "A",
-        image:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-      },
-      {
-        id: 2,
-        title: "B",
-        image:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-      },
-      {
-        id: 3,
-        title: "C",
-        image:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-      },
-      {
-        id: 4,
-        title: "D",
-        image:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-      },
-    ]);
+    const collectionsLS = JSON.parse(localStorage.getItem("collections"));
+
+    if (collectionsLS) {
+      setCollectionsList(collectionsLS);
+    }
   };
 
-  const onSubmitCreateCollection = () => {
+  const onSubmitCreateCollection = (input) => {
+    let newCollections = [...collectionsList];
+    let newCollection = {};
+
     if (modalType === "edit") {
-      console.log("edit");
+      newCollection = { ...selectedCollection, title: input };
+      let index = indexArrayOfObject(collectionsList, "id", newCollection.id);
+      newCollections[index] = newCollection;
     } else {
-      console.log("create");
+      newCollection = {
+        title: input,
+        anime_list: [],
+      };
+
+      if (collectionsList && collectionsList.length) {
+        newCollection["id"] =
+          collectionsList[collectionsList.length - 1].id + 1;
+        newCollections.push(newCollection);
+      }
     }
 
+    // Add to localStorage
+    localStorage.setItem("collections", JSON.stringify(newCollections));
+    setCollectionsList(newCollections);
     closeModal("create");
   };
 
   const onSubmitDeleteCollection = () => {
-    console.log("deleted");
+    let index = indexArrayOfObject(
+      collectionsList,
+      "id",
+      selectedCollection.id
+    );
+    if (index !== -1) {
+      let newCollections = [...collectionsList];
+      newCollections.splice(index, 1);
+
+      // Add to localStorage
+      setCollectionsList(newCollections);
+      localStorage.setItem("collections", JSON.stringify(newCollections));
+    }
     closeModal("delete");
   };
 
@@ -112,12 +122,23 @@ const CollectionList = () => {
   };
 
   const onChangeInput = (input) => {
-    console.log(input);
+    if (input) {
+      const index = collectionsList.findIndex(
+        (element) => element.title === input
+      );
+
+      if (index !== -1) {
+        setValid(false);
+      } else {
+        setValid(true);
+      }
+    } else {
+      setValid(false);
+    }
   };
 
   useEffect(() => {
     getCollectionsList();
-    setValid(true);
   }, []);
 
   let navigate = useNavigate();
@@ -126,39 +147,45 @@ const CollectionList = () => {
   };
 
   return (
-    <CollectionListContainer>
-      <CollectionItem type="empty" onAction={showModalCreate} />
-      {collectionsList.map((element) => (
-        <CollectionItem
-          id={element.id}
-          title={element.title}
-          key={element.id}
-          withAction={true}
-          image={element.image}
-          onAction={() => toDetail(element.id)}
-          onEdit={() => showModalEdit(element)}
-          onDelete={() => showModalDelete(element)}
+    <Layout>
+      <CollectionListContainer>
+        <CollectionItem type="empty" onAction={showModalCreate} />
+        {collectionsList.map((element) => (
+          <CollectionItem
+            id={element.id}
+            title={element.title}
+            key={element.id}
+            withAction={true}
+            image={
+              element.anime_list.length
+                ? element.anime_list[0].coverImage.large
+                : ""
+            }
+            onAction={() => toDetail(element.id)}
+            onEdit={() => showModalEdit(element)}
+            onDelete={() => showModalDelete(element)}
+          />
+        ))}
+
+        <ModalCreateCollection
+          show={show}
+          title={selectedCollection?.title}
+          type={modalType}
+          isValid={isValid}
+          onChangeInput={onChangeInput}
+          onClose={() => closeModal("create")}
+          onSubmit={onSubmitCreateCollection}
         />
-      ))}
 
-      <ModalCreateCollection
-        show={show}
-        title={selectedCollection?.title}
-        type={modalType}
-        isValid={isValid}
-        onChangeInput={onChangeInput}
-        onClose={() => closeModal("create")}
-        onSubmit={onSubmitCreateCollection}
-      />
-
-      <ModalConfirmation
-        show={showConfirmation}
-        title={selectedCollection?.title}
-        onClose={() => closeModal("delete")}
-        onSubmit={onSubmitDeleteCollection}
-        actionText="delete"
-      />
-    </CollectionListContainer>
+        <ModalConfirmation
+          show={showConfirmation}
+          title={selectedCollection?.title}
+          onClose={() => closeModal("delete")}
+          onSubmit={onSubmitDeleteCollection}
+          actionText="delete"
+        />
+      </CollectionListContainer>
+    </Layout>
   );
 };
 

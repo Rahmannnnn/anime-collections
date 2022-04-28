@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Heading } from "../components/Typography";
+import { Heading, Paragraph } from "../components/Typography";
 import { MdModeEdit } from "react-icons/md";
 import AnimeItem from "../components/AnimeItem";
 import styled from "@emotion/styled";
@@ -9,6 +9,8 @@ import { theme } from "../styles/Theme";
 import Layout from "../layout/Layout";
 import ModalCreateCollection from "../components/ModalCreateCollection";
 import ModalConfirmation from "../components/ModalConfirmation";
+import { indexArrayOfObject } from "../utils/Array";
+import { Link, useParams } from "react-router-dom";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -71,8 +73,10 @@ const CollectionDetailTitle = styled.div(
 );
 
 const CollectionDetail = () => {
-  const [title, setTitle] = useState("");
-  const [animeList, setAnimeList] = useState([]);
+  let params = useParams();
+
+  const [collectionsList, setCollectionsList] = useState([]);
+  const [currentCollection, setCurrentCollection] = useState({});
 
   const [showModalEdit, setModalEdit] = useState(false);
   const [isValid, setValid] = useState(true);
@@ -81,171 +85,39 @@ const CollectionDetail = () => {
   const [selectedAnime, setSelectedAnime] = useState({});
 
   const getCollectionDetail = () => {
-    setTitle(
-      "Arip AripAripAripAripArip AripAripArip AripAripArip AripAripArip"
-    );
-    setAnimeList([
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
+    const collectionsLS = JSON.parse(localStorage.getItem("collections"));
 
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-      {
-        id: 88187,
-        title: {
-          romaji: "Ore, Twintail ni Narimasu.",
-          english: null,
-          native: "俺、ツインテールになります。",
-          userPreferred: "Ore, Twintail ni Narimasu.",
-        },
-
-        coverImage: {
-          extraLarge:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
-          large:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
-          medium:
-            "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
-        },
-        bannerImage:
-          "https://s4.anilist.co/file/anilistcdn/media/anime/banner/24-THD6AYmlVPIb.jpg",
-        startDate: {
-          year: 1998,
-          month: 4,
-          day: 3,
-        },
-      },
-    ]);
-
-    setValid(true);
+    if (collectionsLS) {
+      setCollectionsList([...collectionsLS]);
+    }
   };
 
   const onChangeInput = (input) => {
-    console.log(input);
+    if (input) {
+      const index = collectionsList.findIndex(
+        (element) => element.title === input
+      );
+
+      if (index !== -1) {
+        setValid(false);
+      } else {
+        setValid(true);
+      }
+    } else {
+      setValid(false);
+    }
   };
 
-  const onSubmitEditCollection = () => {
-    console.log("edited");
+  const onSubmitEditCollection = (input) => {
+    let newCollections = [...collectionsList];
+    let newCollection = { ...currentCollection, title: input };
+
+    let index = indexArrayOfObject(collectionsList, "id", newCollection.id);
+    newCollections[index] = newCollection;
+
+    localStorage.setItem("collections", JSON.stringify(newCollections));
+    setCollectionsList(newCollections);
+    setModalEdit(false);
   };
 
   const showModalConfirmation = (item) => {
@@ -264,8 +136,48 @@ const CollectionDetail = () => {
 
   const onSubmitDeleteAnime = () => {
     console.log("anime deleted");
+
+    let newCollections = [...collectionsList];
+    let newCollection = { ...currentCollection };
+    let newAnimeList = [...newCollection.anime_list];
+
+    let index = indexArrayOfObject(newAnimeList, "id", selectedAnime.id);
+    console.log(index);
+
+    if (index !== -1) {
+      newAnimeList.splice(index, 1);
+      newCollection = { ...currentCollection, anime_list: [...newAnimeList] };
+      console.log(newAnimeList);
+
+      let indexCollection = indexArrayOfObject(
+        newCollections,
+        "id",
+        newCollection.id
+      );
+
+      if (indexCollection !== -1) {
+        newCollections[indexCollection] = newCollection;
+        localStorage.setItem("collections", JSON.stringify(newCollections));
+        setCollectionsList(newCollections);
+      }
+    }
+
     closeModalConfirmation();
   };
+
+  useEffect(() => {
+    if (collectionsList) {
+      let index = indexArrayOfObject(
+        collectionsList,
+        "id",
+        parseInt(params.collectionId)
+      );
+
+      if (index !== -1) {
+        setCurrentCollection(collectionsList[index]);
+      }
+    }
+  }, [collectionsList, params.collectionId]);
 
   useEffect(() => {
     getCollectionDetail();
@@ -274,35 +186,60 @@ const CollectionDetail = () => {
   return (
     <Layout>
       <CollectionDetailTitle>
-        <Heading>{title || ""}</Heading>
+        <Heading>{currentCollection?.title || ""}</Heading>
         <MdModeEdit className="icon" onClick={() => setModalEdit(true)} />
       </CollectionDetailTitle>
-      <AnimeListContainer>
-        {animeList.map(
-          ({ id, title, coverImage, bannerImage, startDate }, index) => (
-            <div key={index} className="anime_item">
-              <AnimeItem
-                id={id}
-                title={title}
-                coverImage={coverImage}
-                bannerImage={bannerImage}
-                startDate={startDate}
-              />
 
-              <Button
-                background={theme.colors.red}
-                onClick={() => showModalConfirmation({ id, title })}
-              >
-                Delete
-              </Button>
-            </div>
-          )
-        )}
-      </AnimeListContainer>
+      {currentCollection?.anime_list?.length ? (
+        <AnimeListContainer>
+          {currentCollection?.anime_list?.map(
+            ({ id, title, coverImage, startDate }, index) => (
+              <div key={index} className="anime_item">
+                <AnimeItem
+                  id={id}
+                  title={title}
+                  coverImage={coverImage}
+                  startDate={startDate}
+                />
+
+                <Button
+                  background={theme.colors.red}
+                  onClick={() => showModalConfirmation({ id, title })}
+                >
+                  Delete
+                </Button>
+              </div>
+            )
+          )}
+        </AnimeListContainer>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Paragraph color={theme.colors.lightGray}>
+            Oops, your collection is empty
+          </Paragraph>
+          <Link
+            style={{
+              textDecoration: "none",
+              color: theme.colors.darkBlue,
+            }}
+            to="/"
+          >
+            <Button>Go To Anime List</Button>
+          </Link>
+        </div>
+      )}
 
       <ModalCreateCollection
         show={showModalEdit}
-        title={title}
+        title={currentCollection.title}
         type="edit"
         isValid={isValid}
         onChangeInput={onChangeInput}
@@ -322,3 +259,35 @@ const CollectionDetail = () => {
 };
 
 export default CollectionDetail;
+
+// let collections = [
+//   {
+//     title: "Judul Collec",
+//     id: 1,
+//     anime_list: [
+//       {
+//         id: 21,
+//         title: {
+//           english: "ONE PIECE",
+//           native: "ONE PIECE",
+//           userPreferred: "ONE PIECE",
+//           romaji: "ONE PIECE",
+//         },
+//         coverImage: {
+//           extraLarge:
+//             "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y20PIL9.jpg",
+//           large:
+//             "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx21-tXMN3Y20PIL9.jpg",
+//           medium:
+//             "https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx21-tXMN3Y20PIL9.jpg",
+//           color: "#e4a15d",
+//         },
+//         startDate: {
+//           year: 1999,
+//           month: 10,
+//           day: 10,
+//         },
+//       },
+//     ],
+//   },
+// ];

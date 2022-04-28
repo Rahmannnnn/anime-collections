@@ -11,18 +11,18 @@ const Collection = styled.div(
       align-items: center;
       justify-content: space-between;
       gap: .5rem;
-
+      
       color: ${theme.colors.lightGray};
-
+      
       h1 {
-        cursor: pointer;
+        font-size: 14px;
       }
 
       .action {
         display: flex;
         gap: .5rem;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
 
         &__icon {
           color: ${theme.colors.black};
@@ -116,7 +116,6 @@ const CollectionEmptyContainer = styled(CollectionItemContainer)(
       border: 1px dashed ${theme.colors.white};
       color: ${theme.colors.white};
       transition: .25s;
-
     }
   `
 );
@@ -144,7 +143,9 @@ const CollectionItem = (props) => {
         )}
       </CollectionItemContainer>
       <div className="description">
-        <Heading onClick={props.onAction}>{title || ""}</Heading>
+        <Heading onClick={props.onAction}>
+          {title.length > 20 ? `${title.substring(0, 20)}...` : title || ""}
+        </Heading>
         {withAction ? (
           <div className="action">
             <div className="action__icon edit" onClick={props.onEdit}>

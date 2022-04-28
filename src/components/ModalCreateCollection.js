@@ -65,7 +65,7 @@ const ModalCreateCollection = (props) => {
   };
 
   const onSubmit = () => {
-    props.onSubmit();
+    props.onSubmit(input);
   };
 
   const onChangeInput = (input) => {
