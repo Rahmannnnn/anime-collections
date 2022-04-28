@@ -30,7 +30,7 @@ const AnimeListContainer = styled.div(
 );
 
 const AnimeList = () => {
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
 
   const { error, loading, data } = useQuery(GET_ANIME_LIST, {
     fetchPolicy: "network-only",
@@ -49,7 +49,7 @@ const AnimeList = () => {
             title={title}
             coverImage={coverImage}
             startDate={startDate}
-            key={index}
+            key={"anime-list-home-" + index}
           />
         ))}
       </AnimeListContainer>

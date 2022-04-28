@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 
 import { GET_ANIME_DETAIL } from "../graphql/Queries";
@@ -17,6 +17,8 @@ import { Heading, Paragraph, Subheading } from "../components/Typography";
 
 import { MONTH_SHORT } from "../constants/date";
 import Loading from "../components/Loading";
+import { indexArrayOfObject } from "../utils/Array";
+import CollectionItem from "../components/CollectionItem";
 
 const Banner = styled.div(
   (props) => `
@@ -126,6 +128,22 @@ const DescriptionContainer = styled.div(
 `
 );
 
+const CollectionsContainer = styled.div`
+  min-height: 100px;
+
+  .collections_list {
+    margin: 1rem 0;
+    display: grid;
+    grid-gap: 0.5rem;
+    grid-template-columns: repeat(3, 1fr);
+
+    ${mq("md")} {
+      grid-gap: 1rem;
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+`;
+
 const RecommendationsContainer = styled.div(
   () => `
     min-height: 100px;
@@ -145,7 +163,6 @@ const RecommendationsContainer = styled.div(
 );
 
 const AnimeDetail = () => {
-  // TODO: Handle ID Anime to Call API
   let params = useParams();
 
   const { error, loading, data } = useQuery(GET_ANIME_DETAIL, {
@@ -153,10 +170,8 @@ const AnimeDetail = () => {
     variables: { id: parseInt(params.animeId) },
   });
 
-  // const [item, setItem] = useState();
   const [width, setWidth] = useState(0);
 
-  // TODO: set value when call API
   const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [popularity, setPopularity] = useState(0);
@@ -176,6 +191,9 @@ const AnimeDetail = () => {
     useState(false);
   const [isValid, setValid] = useState(true);
 
+  const [collectionsList, setCollectionsList] = useState([]);
+  const [animeCollections, setAnimeCollections] = useState([]);
+
   const handleResize = () => {
     const currentWidth = window.screen.width;
     setWidth(currentWidth);
@@ -190,7 +208,9 @@ const AnimeDetail = () => {
   };
 
   const submitModalAdd = (collectionsList) => {
-    console.log(collectionsList);
+    setCollectionsList(collectionsList);
+    localStorage.setItem("collections", JSON.stringify(collectionsList));
+
     closeModalAdd();
   };
 
@@ -204,17 +224,72 @@ const AnimeDetail = () => {
     showModalAdd();
   };
 
-  const submitModalCreate = () => {
-    console.log("create");
+  const submitModalCreate = (input) => {
+    let newCollections = [...collectionsList];
+    let newCollection = {
+      title: input,
+      anime_list: [],
+    };
+
+    if (collectionsList && collectionsList.length) {
+      newCollection["id"] = collectionsList[collectionsList.length - 1].id + 1;
+    } else {
+      newCollection["id"] = 1;
+    }
+
+    newCollections.push(newCollection);
+
+    localStorage.setItem("collections", JSON.stringify(newCollections));
+    setCollectionsList(newCollections);
+
     closeModalCreate();
   };
 
   const onChangeInput = (input) => {
-    console.log(input);
+    if (input) {
+      const index = collectionsList.findIndex(
+        (element) => element.title === input
+      );
+
+      if (index !== -1) {
+        setValid(false);
+      } else {
+        setValid(true);
+      }
+    } else {
+      setValid(false);
+    }
+  };
+
+  const getCollectionsList = () => {
+    const collectionsLS = JSON.parse(localStorage.getItem("collections"));
+
+    if (collectionsLS) {
+      setCollectionsList(collectionsLS);
+    }
   };
 
   useEffect(() => {
-    setValid(true);
+    let result = [];
+
+    collectionsList.forEach((item) => {
+      const { anime_list } = item;
+      let index = indexArrayOfObject(
+        anime_list,
+        "id",
+        parseInt(params.animeId)
+      );
+
+      if (index !== -1) {
+        result.push(item);
+      }
+    });
+
+    setAnimeCollections(result);
+  }, [collectionsList, params.animeId]);
+
+  useEffect(() => {
+    getCollectionsList();
   }, []);
 
   useEffect(() => {
@@ -336,7 +411,7 @@ const AnimeDetail = () => {
                 <Paragraph
                   fontSize={14}
                   color={theme.colors.white}
-                  key={"genre" + index}
+                  key={"genre-anime-detail-" + index}
                 >
                   {element || "-"}
                 </Paragraph>
@@ -361,9 +436,35 @@ const AnimeDetail = () => {
             <Paragraph className="text">{title.native || "-"}</Paragraph>
           </div>
           <div className="right">
-            <Subheading fontSize={14} color={theme.colors.lightGray}>
-              Collections
-            </Subheading>
+            {animeCollections?.length ? (
+              <CollectionsContainer>
+                <Subheading fontSize={14} color={theme.colors.lightGray}>
+                  Collections
+                </Subheading>
+                <div className="collections_list">
+                  {animeCollections.map((element) => (
+                    <Link
+                      to={`../collections/${element.id}`}
+                      key={"collection-item-anime-detail-" + element.id}
+                    >
+                      <CollectionItem
+                        id={element.id}
+                        title={element.title}
+                        withAction={false}
+                        image={
+                          element.anime_list.length
+                            ? element.anime_list[0].coverImage.large
+                            : ""
+                        }
+                      />
+                    </Link>
+                  ))}
+                </div>
+              </CollectionsContainer>
+            ) : (
+              ""
+            )}
+
             {recommendations.length ? (
               <RecommendationsContainer>
                 <Subheading fontSize={14} color={theme.colors.lightGray}>
@@ -376,7 +477,7 @@ const AnimeDetail = () => {
                       title={mediaRecommendation.title}
                       coverImage={mediaRecommendation.coverImage}
                       startDate={mediaRecommendation.startDate}
-                      key={index}
+                      key={"recommendation-item-anime-detail-" + index}
                     />
                   ))}
                 </div>
@@ -389,6 +490,11 @@ const AnimeDetail = () => {
 
         <ModalAddToCollection
           show={showModalAddCollection}
+          collections={collectionsList}
+          selectedCollectionsProps={animeCollections}
+          addedAnimeList={[
+            { id: params.animeId, title, coverImage, startDate },
+          ]}
           onClose={closeModalAdd}
           onSubmit={submitModalAdd}
           onAdd={showModalCreate}

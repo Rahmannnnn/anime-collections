@@ -57,7 +57,6 @@ const CollectionDetailTitle = styled.div(
     color: ${theme.colors.lightGray};
 
     h1 {
-      flex: 1;
       font-size: 40px;
       text-decoration: underline;
       overflow: hidden;
@@ -135,19 +134,15 @@ const CollectionDetail = () => {
   };
 
   const onSubmitDeleteAnime = () => {
-    console.log("anime deleted");
-
     let newCollections = [...collectionsList];
     let newCollection = { ...currentCollection };
     let newAnimeList = [...newCollection.anime_list];
 
     let index = indexArrayOfObject(newAnimeList, "id", selectedAnime.id);
-    console.log(index);
 
     if (index !== -1) {
       newAnimeList.splice(index, 1);
       newCollection = { ...currentCollection, anime_list: [...newAnimeList] };
-      console.log(newAnimeList);
 
       let indexCollection = indexArrayOfObject(
         newCollections,
@@ -194,7 +189,10 @@ const CollectionDetail = () => {
         <AnimeListContainer>
           {currentCollection?.anime_list?.map(
             ({ id, title, coverImage, startDate }, index) => (
-              <div key={index} className="anime_item">
+              <div
+                key={"anime-list-collection-detail-" + index}
+                className="anime_item"
+              >
                 <AnimeItem
                   id={id}
                   title={title}

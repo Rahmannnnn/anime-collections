@@ -66,8 +66,10 @@ const CollectionList = () => {
       if (collectionsList && collectionsList.length) {
         newCollection["id"] =
           collectionsList[collectionsList.length - 1].id + 1;
-        newCollections.push(newCollection);
+      } else {
+        newCollection["id"] = 1;
       }
+      newCollections.push(newCollection);
     }
 
     // Add to localStorage
@@ -154,7 +156,7 @@ const CollectionList = () => {
           <CollectionItem
             id={element.id}
             title={element.title}
-            key={element.id}
+            key={"collection-item-collection-list-" + element.id}
             withAction={true}
             image={
               element.anime_list.length
