@@ -1,13 +1,15 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import AnimeItem from "../components/AnimeItem";
+import { useEffect, useState } from "react";
 import { mq } from "../styles/Breakpoints";
 
 import { useQuery } from "@apollo/client";
 import { GET_ANIME_LIST } from "../graphql/Queries";
+
 import Layout from "../layout/Layout";
+import AnimeItem from "../components/AnimeItem";
 import Loading from "../components/Loading";
 import Pagination from "../components/Pagination";
+import { Button } from "../components/Button";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -42,8 +44,20 @@ const AnimeItemContainer = styled.div(
   `
 );
 
+const SelectMultipleContainer = styled.div(
+  () => `
+    margin-top: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  `
+);
+
 const AnimeList = () => {
   const [page, setPage] = useState(1);
+  const [isMultipleSelect, setIsMultipleSelect] = useState(false);
+  const [selectedAnimeList, setSelectedAnimeList] = useState({});
+  const [arraySelected, setArraySelected] = useState([]);
 
   const { error, loading, data } = useQuery(GET_ANIME_LIST, {
     fetchPolicy: "network-only",
@@ -54,20 +68,61 @@ const AnimeList = () => {
     setPage(number);
   };
 
+  const handleCheckAnime = (anime) => {
+    let temp = { ...selectedAnimeList };
+    const { id, title, coverImage, startDate } = anime;
+
+    if (temp[id]) {
+      delete temp[id];
+    } else {
+      temp[id] = { id, title, coverImage, startDate };
+    }
+
+    setSelectedAnimeList(temp);
+  };
+
+  useEffect(() => {
+    if (!isMultipleSelect) setSelectedAnimeList({});
+  }, [isMultipleSelect]);
+
+  useEffect(() => {
+    let result = [];
+    let keys = Object.keys(selectedAnimeList);
+
+    keys.forEach((key) => {
+      result.push(selectedAnimeList[key]);
+    });
+
+    setArraySelected(result);
+  }, [selectedAnimeList]);
+
   if (loading) return <Loading />;
   if (error) return <p>Error :(</p>;
 
   return (
     <Layout>
+      <SelectMultipleContainer>
+        <Button
+          disabled={isMultipleSelect}
+          onClick={() => setIsMultipleSelect(!isMultipleSelect)}
+        >
+          Select multiple
+        </Button>
+        {isMultipleSelect ? <Button>Add to collections</Button> : ""}
+      </SelectMultipleContainer>
       <AnimeListContainer>
         {data.Page.media.map(({ id, title, coverImage, startDate }, index) => (
-          <AnimeItemContainer>
+          <AnimeItemContainer key={"anime-list-home-" + index}>
             <AnimeItem
               id={id}
               title={title}
               coverImage={coverImage}
               startDate={startDate}
-              key={"anime-list-home-" + index}
+              isMultipleSelect={isMultipleSelect}
+              onMultipleSelect={() =>
+                handleCheckAnime({ id, title, coverImage, startDate })
+              }
+              checked={selectedAnimeList[id]}
             />
           </AnimeItemContainer>
         ))}

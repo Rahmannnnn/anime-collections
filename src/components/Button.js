@@ -15,7 +15,7 @@ const Button = styled.button(
   outline: none;
   border: none;
   border-radius: .5rem;
-  cursor: pointer;
+  cursor: ${props.disabled ? "disable" : "pointer"};
   font-family: ${theme.fontFamily.openSans};
   font-weight: ${theme.fontWeight.bold};
 

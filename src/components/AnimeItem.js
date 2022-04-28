@@ -7,7 +7,7 @@ import { mq } from "../styles/Breakpoints";
 import { Link } from "react-router-dom";
 
 const AnimeItemContainer = styled.div(
-  () => `
+  (props) => `
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -43,31 +43,85 @@ const AnimeItemContainer = styled.div(
     }
   }
 
-  :hover {
+  .image_container {
+    position: relative;
+
+    .checkbox {
+      position: absolute;
+      top: .5rem;
+      left: 20%;
+
+      width: 30px;
+      height: 30px;
+      background: ${props.checked ? theme.colors.green : theme.colors.darkBlue};
+      border: 1px solid ${
+        props.checked ? theme.colors.green : theme.colors.darkBlue
+      };
+      border-radius: .5rem;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color:${props.checked ? theme.colors.black : theme.colors.white};
+      font-weight: 900;
+    }
+  }
+  ${
+    !props.isMultipleSelect
+      ? ` :hover {
     h1, p {
       transition: .25s ease-in-out;
       color: ${theme.colors.white};
     }
+  }`
+      : ""
   }
 `
 );
 
 const AnimeItem = (props) => {
-  const { title, coverImage, startDate, id } = props;
+  const { title, coverImage, startDate, id, isMultipleSelect, checked } = props;
 
   return (
-    <AnimeItemContainer>
-      <Link
-        style={{
-          textDecoration: "none",
-          color: theme.colors.darkBlue,
-        }}
-        to={`../anime/${id}`}
-      >
-        {coverImage ? <img src={coverImage.large} alt={title} /> : ""}
-        <Heading color={theme.colors.lightGray}>{title.userPreferred}</Heading>
-        <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
-      </Link>
+    <AnimeItemContainer isMultipleSelect={isMultipleSelect} checked={checked}>
+      {!isMultipleSelect ? (
+        <Link
+          style={{
+            textDecoration: "none",
+            color: theme.colors.darkBlue,
+          }}
+          to={`../anime/${id}`}
+        >
+          {coverImage ? (
+            <div>
+              <img src={coverImage.large} alt={title} />
+            </div>
+          ) : (
+            ""
+          )}
+          <Heading color={theme.colors.lightGray}>
+            {title.userPreferred}
+          </Heading>
+          <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
+        </Link>
+      ) : (
+        <div onClick={props.onMultipleSelect}>
+          {coverImage ? (
+            <div className="image_container">
+              <img src={coverImage.large} alt={title} />
+              <div className="checkbox">
+                {checked ? <Paragraph>&#128504;</Paragraph> : ""}
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
+          <Heading color={theme.colors.lightGray}>
+            {title.userPreferred}
+          </Heading>
+          <Paragraph color={theme.colors.lightGray}>{startDate.year}</Paragraph>
+        </div>
+      )}
     </AnimeItemContainer>
   );
 };

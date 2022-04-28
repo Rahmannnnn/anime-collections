@@ -193,6 +193,7 @@ const AnimeDetail = () => {
 
   const [collectionsList, setCollectionsList] = useState([]);
   const [animeCollections, setAnimeCollections] = useState([]);
+  const [selectedCollections, setSelectedCollections] = useState({});
 
   const handleResize = () => {
     const currentWidth = window.screen.width;
@@ -287,6 +288,17 @@ const AnimeDetail = () => {
 
     setAnimeCollections(result);
   }, [collectionsList, params.animeId]);
+
+  useEffect(() => {
+    let result = {};
+    if (animeCollections.length) {
+      animeCollections.forEach((element) => {
+        result[element.id] = true;
+      });
+    }
+
+    setSelectedCollections(result);
+  }, [animeCollections]);
 
   useEffect(() => {
     getCollectionsList();
@@ -495,7 +507,7 @@ const AnimeDetail = () => {
         <ModalAddToCollection
           show={showModalAddCollection}
           collections={collectionsList}
-          selectedCollectionsProps={animeCollections}
+          selectedCollectionsProps={selectedCollections}
           addedAnimeList={[
             { id: params.animeId, title, coverImage, startDate },
           ]}

@@ -162,6 +162,7 @@ const CollectionList = () => {
                 ? element.anime_list[0].coverImage.large
                 : ""
             }
+            key={"collection-item-list-" + element.id}
             onAction={() => toDetail(element.id)}
             onEdit={() => showModalEdit(element)}
             onDelete={() => showModalDelete(element)}

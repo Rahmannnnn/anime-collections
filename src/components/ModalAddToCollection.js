@@ -5,7 +5,7 @@ import { Heading, Paragraph, Subheading } from "./Typography";
 
 import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
-import { AddUniqueObjectToArray, indexArrayOfObject } from "../utils/Array";
+import { AddUniqueObjectToArray } from "../utils/Array";
 
 const EmptyCollectionsList = styled.div(
   () => `
@@ -145,19 +145,18 @@ const CollectionItemCheckbox = (props) => {
 const ModalAddToCollection = (props) => {
   const { show, collections, selectedCollectionsProps, addedAnimeList } = props;
 
-  const [collectionsListWithSelected, setCollectionsListWithSelected] =
-    useState([]);
+  const [selectedCollections, setSelectedCollections] = useState({});
 
-  const handleClick = (index) => {
-    let temp = [...collectionsListWithSelected];
+  const handleClick = (id) => {
+    let temp = { ...selectedCollections };
 
-    if (temp[index].checked) {
-      temp[index].checked = false;
+    if (temp[id]) {
+      delete temp[id];
     } else {
-      temp[index].checked = true;
+      temp[id] = true;
     }
 
-    setCollectionsListWithSelected(temp);
+    setSelectedCollections(temp);
   };
 
   const onClose = () => {
@@ -165,13 +164,13 @@ const ModalAddToCollection = (props) => {
   };
 
   const onSubmit = () => {
-    let collectionsListTemp = [...collectionsListWithSelected];
+    let collectionsListTemp = [...collections];
 
     if (addedAnimeList?.length) {
       collectionsListTemp.forEach((element, index) => {
-        const { checked, anime_list } = element;
+        const { id, anime_list } = element;
 
-        if (checked) {
+        if (selectedCollections[id]) {
           addedAnimeList.forEach((anime) => {
             collectionsListTemp[index].anime_list = AddUniqueObjectToArray(
               anime_list,
@@ -179,8 +178,6 @@ const ModalAddToCollection = (props) => {
               anime
             );
           });
-
-          delete collectionsListTemp[index].checked;
         }
       });
     }
@@ -193,23 +190,12 @@ const ModalAddToCollection = (props) => {
   };
 
   useEffect(() => {
-    if (collections?.length && show) {
-      let newCollections = [...collections];
-
-      if (selectedCollectionsProps?.length) {
-        selectedCollectionsProps.forEach((element) => {
-          let index = indexArrayOfObject(newCollections, "id", element.id);
-          if (index !== -1) {
-            newCollections[index] = { ...element, checked: true };
-          }
-        });
-      }
-
-      setCollectionsListWithSelected(newCollections);
+    if (show) {
+      setSelectedCollections({ ...selectedCollectionsProps });
     } else if (!show) {
-      setCollectionsListWithSelected([]);
+      setSelectedCollections({});
     }
-  }, [show, selectedCollectionsProps, collections]);
+  }, [selectedCollectionsProps, show]);
 
   return (
     <ModalGeneral show={show} onClose={onClose}>
@@ -249,16 +235,16 @@ const ModalAddToCollection = (props) => {
           >
             to collection(s):
           </Subheading>
-          {collectionsListWithSelected?.length ? (
+          {collections?.length ? (
             <>
               <CollectionsContainer>
-                {collectionsListWithSelected.map((item, index) => (
+                {collections.map((item, index) => (
                   <CollectionItemCheckbox
                     key={"collection-checkbox-modal-add-" + index}
                     id={item.id}
                     title={item.title}
-                    checked={item.checked || false}
-                    setCheck={() => handleClick(index)}
+                    checked={selectedCollections[item.id] || false}
+                    setCheck={() => handleClick(item.id)}
                   ></CollectionItemCheckbox>
                 ))}
               </CollectionsContainer>
