@@ -12,6 +12,7 @@ import Pagination from "../components/Pagination";
 import { Button } from "../components/Button";
 import ModalAddToCollection from "../components/ModalAddToCollection";
 import ModalCreateCollection from "../components/ModalCreateCollection";
+import { theme } from "../styles/Theme";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -52,6 +53,12 @@ const SelectMultipleContainer = styled.div(
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 1rem;
+
+    button {
+      padding: .5rem;
+
+    }
   `
 );
 
@@ -176,8 +183,6 @@ const AnimeList = () => {
       result.push(selectedAnimeList[key]);
     });
 
-    console.log(result);
-
     setArraySelected(result);
   }, [selectedAnimeList]);
 
@@ -188,10 +193,10 @@ const AnimeList = () => {
     <Layout>
       <SelectMultipleContainer>
         <Button
-          disabled={isMultipleSelect}
+          background={isMultipleSelect ? theme.colors.red : theme.colors.green}
           onClick={() => setIsMultipleSelect(!isMultipleSelect)}
         >
-          Select multiple
+          {isMultipleSelect ? "Cancel" : "Select multiple"}
         </Button>
         {isMultipleSelect ? (
           <Button disabled={!arraySelected.length} onClick={showModalAdd}>
