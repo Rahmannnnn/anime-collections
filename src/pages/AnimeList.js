@@ -10,6 +10,8 @@ import AnimeItem from "../components/AnimeItem";
 import Loading from "../components/Loading";
 import Pagination from "../components/Pagination";
 import { Button } from "../components/Button";
+import ModalAddToCollection from "../components/ModalAddToCollection";
+import ModalCreateCollection from "../components/ModalCreateCollection";
 
 const AnimeListContainer = styled.div(
   () => `
@@ -59,6 +61,13 @@ const AnimeList = () => {
   const [selectedAnimeList, setSelectedAnimeList] = useState({});
   const [arraySelected, setArraySelected] = useState([]);
 
+  const [showModalAddCollection, setShowModalAddCollection] = useState(false);
+  const [collectionsList, setCollectionsList] = useState([]);
+  const [isValid, setValid] = useState(true);
+
+  const [showModalCreateCollection, setShowModalCreateCollection] =
+    useState(false);
+
   const { error, loading, data } = useQuery(GET_ANIME_LIST, {
     fetchPolicy: "network-only",
     variables: { page: page },
@@ -81,6 +90,80 @@ const AnimeList = () => {
     setSelectedAnimeList(temp);
   };
 
+  const onChangeInput = (input) => {
+    if (input) {
+      const index = collectionsList.findIndex(
+        (element) => element.title === input
+      );
+
+      if (index !== -1) {
+        setValid(false);
+      } else {
+        setValid(true);
+      }
+    } else {
+      setValid(false);
+    }
+  };
+
+  const getCollectionsList = () => {
+    const collectionsLS = JSON.parse(localStorage.getItem("collections"));
+
+    if (collectionsLS) {
+      setCollectionsList(collectionsLS);
+    }
+  };
+
+  const showModalAdd = () => {
+    setShowModalAddCollection(true);
+  };
+
+  const closeModalAdd = () => {
+    setShowModalAddCollection(false);
+  };
+
+  const submitModalAdd = (collectionsList) => {
+    setCollectionsList(collectionsList);
+    localStorage.setItem("collections", JSON.stringify(collectionsList));
+
+    closeModalAdd();
+  };
+
+  const showModalCreate = () => {
+    closeModalAdd();
+    setShowModalCreateCollection(true);
+  };
+
+  const closeModalCreate = () => {
+    setShowModalCreateCollection(false);
+    showModalAdd();
+  };
+
+  const submitModalCreate = (input) => {
+    let newCollections = [...collectionsList];
+    let newCollection = {
+      title: input,
+      anime_list: [],
+    };
+
+    if (collectionsList && collectionsList.length) {
+      newCollection["id"] = collectionsList[collectionsList.length - 1].id + 1;
+    } else {
+      newCollection["id"] = 1;
+    }
+
+    newCollections.push(newCollection);
+
+    localStorage.setItem("collections", JSON.stringify(newCollections));
+    setCollectionsList(newCollections);
+
+    closeModalCreate();
+  };
+
+  useEffect(() => {
+    getCollectionsList();
+  }, []);
+
   useEffect(() => {
     if (!isMultipleSelect) setSelectedAnimeList({});
   }, [isMultipleSelect]);
@@ -92,6 +175,8 @@ const AnimeList = () => {
     keys.forEach((key) => {
       result.push(selectedAnimeList[key]);
     });
+
+    console.log(result);
 
     setArraySelected(result);
   }, [selectedAnimeList]);
@@ -108,7 +193,13 @@ const AnimeList = () => {
         >
           Select multiple
         </Button>
-        {isMultipleSelect ? <Button>Add to collections</Button> : ""}
+        {isMultipleSelect ? (
+          <Button disabled={!arraySelected.length} onClick={showModalAdd}>
+            Add to collections
+          </Button>
+        ) : (
+          ""
+        )}
       </SelectMultipleContainer>
       <AnimeListContainer>
         {data.Page.media.map(({ id, title, coverImage, startDate }, index) => (
@@ -131,6 +222,26 @@ const AnimeList = () => {
         currentPage={page}
         totalPage={data.Page.pageInfo.lastPage}
         setPage={pagination}
+      />
+
+      <ModalAddToCollection
+        show={showModalAddCollection}
+        collections={collectionsList}
+        selectedCollectionsProps={{}}
+        addedAnimeList={arraySelected}
+        onClose={closeModalAdd}
+        onSubmit={submitModalAdd}
+        onAdd={showModalCreate}
+      />
+
+      <ModalCreateCollection
+        show={showModalCreateCollection}
+        title=""
+        type="create"
+        isValid={isValid}
+        onChangeInput={onChangeInput}
+        onClose={closeModalCreate}
+        onSubmit={submitModalCreate}
       />
     </Layout>
   );

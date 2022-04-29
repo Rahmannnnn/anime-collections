@@ -170,13 +170,17 @@ const ModalAddToCollection = (props) => {
       collectionsListTemp.forEach((element, index) => {
         const { id, anime_list } = element;
 
+        let temporaryAnimeList = anime_list;
+
         if (selectedCollections[id]) {
           addedAnimeList.forEach((anime) => {
             collectionsListTemp[index].anime_list = AddUniqueObjectToArray(
-              anime_list,
+              temporaryAnimeList,
               "id",
               anime
             );
+
+            temporaryAnimeList = collectionsListTemp[index].anime_list;
           });
         }
       });
