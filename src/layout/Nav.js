@@ -61,7 +61,7 @@ const Nav = () => {
   }, []);
 
   return (
-    <Navigation scroll={scrollPosition}>
+    <Navigation scroll={scrollPosition} data-testid="nav">
       <NavLink
         className={({ isActive }) => (isActive ? "link active" : "link")}
         to="/"
@@ -80,3 +80,4 @@ const Nav = () => {
 };
 
 export default Nav;
+export { Navigation };

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { mq } from "../styles/Breakpoints";
 
-const LayoutContainer = styled.div`
+export const LayoutContainer = styled.div`
   width: 100%;
 
   ${mq("lg")} {
@@ -11,7 +11,9 @@ const LayoutContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  return <LayoutContainer>{props.children}</LayoutContainer>;
+  return (
+    <LayoutContainer data-testid="layout">{props.children}</LayoutContainer>
+  );
 };
 
 export default Layout;

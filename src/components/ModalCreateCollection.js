@@ -83,10 +83,11 @@ const ModalCreateCollection = (props) => {
 
   return (
     <ModalGeneral show={show} onClose={onClose}>
-      <ModalCreateCollectionContainer>
+      <ModalCreateCollectionContainer data-testid="modal-create-collection">
         <div className="content">
           <Heading>{type === "edit" ? "Edit" : "Create"} Collection</Heading>
           <input
+            aria-label="collection-title-input"
             type="text"
             className={isValid ? "" : "error"}
             value={input}

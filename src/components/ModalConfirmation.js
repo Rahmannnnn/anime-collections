@@ -47,7 +47,7 @@ const ModalConfirmation = (props) => {
 
   return (
     <ModalGeneral show={show} onClose={onClose}>
-      <ModalConfirmationContainer>
+      <ModalConfirmationContainer data-testid="modal-confirmation">
         <div className="content">
           <Heading>
             Are you sure you want to {actionText} "{title}"?

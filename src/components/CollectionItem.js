@@ -125,14 +125,17 @@ const CollectionItem = (props) => {
 
   if (type === "empty") {
     return (
-      <CollectionEmptyContainer onClick={props.onAction}>
+      <CollectionEmptyContainer
+        data-testid="collection-item-empty"
+        onClick={props.onAction}
+      >
         <Paragraph className="plus_icon">+</Paragraph>
       </CollectionEmptyContainer>
     );
   }
 
   return (
-    <Collection>
+    <Collection data-testid="collection-item">
       <CollectionItemContainer onClick={props.onAction}>
         {image ? (
           <ImageContainer>
@@ -148,10 +151,18 @@ const CollectionItem = (props) => {
         </Heading>
         {withAction ? (
           <div className="action">
-            <div className="action__icon edit" onClick={props.onEdit}>
+            <div
+              className="action__icon edit"
+              data-testid="edit-button"
+              onClick={props.onEdit}
+            >
               <MdModeEdit fontSize={20} />
             </div>
-            <div className="action__icon delete" onClick={props.onDelete}>
+            <div
+              className="action__icon delete"
+              data-testid="delete-button"
+              onClick={props.onDelete}
+            >
               <MdDelete fontSize={20} />
             </div>
           </div>

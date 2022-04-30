@@ -36,7 +36,7 @@ const PaginationContainer = styled.div(
 );
 
 const Pagination = (props) => {
-  const { currentPage, totalPage, setPage } = props;
+  const { currentPage, totalPage } = props;
 
   const [numbers, setNumbers] = useState([]);
 
@@ -70,15 +70,18 @@ const Pagination = (props) => {
   }, [currentPage, totalPage]);
 
   return (
-    <PaginationContainer>
+    <PaginationContainer data-testid="pagination">
       {currentPage > 1 ? (
-        <button onClick={() => setPage(currentPage - 1)}>{`<`}</button>
+        <button
+          data-testid="pagination-button-previous"
+          onClick={() => props.setPage(currentPage - 1)}
+        >{`<`}</button>
       ) : (
         ""
       )}
       {numbers.map((item, index) => (
         <button
-          onClick={() => setPage(item)}
+          onClick={() => props.setPage(item)}
           key={"pagination-" + index}
           style={
             item.toString() === currentPage.toString()
@@ -95,7 +98,7 @@ const Pagination = (props) => {
       ))}
 
       {currentPage < totalPage ? (
-        <button onClick={() => setPage(currentPage + 1)}>{`>`}</button>
+        <button onClick={() => props.setPage(currentPage + 1)}>{`>`}</button>
       ) : (
         ""
       )}

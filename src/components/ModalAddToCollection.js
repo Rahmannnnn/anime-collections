@@ -87,7 +87,7 @@ const CollectionsContainer = styled.div(
 `
 );
 
-const CollectionItemCheckbox = (props) => {
+export const CollectionItemCheckbox = (props) => {
   const CollectionItemContainer = styled.div(
     (props) => `
       background: ${theme.colors.darkBlue};
@@ -133,7 +133,11 @@ const CollectionItemCheckbox = (props) => {
   };
 
   return (
-    <CollectionItemContainer onClick={setCheck} checked={props.checked}>
+    <CollectionItemContainer
+      data-testid="collection-item-checkbox"
+      onClick={setCheck}
+      checked={props.checked}
+    >
       <div className="checkbox">
         <Paragraph>&#128504;</Paragraph>
       </div>
@@ -203,7 +207,7 @@ const ModalAddToCollection = (props) => {
 
   return (
     <ModalGeneral show={show} onClose={onClose}>
-      <ModalAddToCollectionContainer>
+      <ModalAddToCollectionContainer data-testid="modal-add-to-collection">
         <div className="content">
           <Heading>Add To Collections</Heading>
           <Subheading
@@ -244,6 +248,7 @@ const ModalAddToCollection = (props) => {
               <CollectionsContainer>
                 {collections.map((item, index) => (
                   <CollectionItemCheckbox
+                    data-testid="modal-add-to-collection-checkbox"
                     key={"collection-checkbox-modal-add-" + index}
                     id={item.id}
                     title={item.title}

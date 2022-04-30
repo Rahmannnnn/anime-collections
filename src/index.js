@@ -17,4 +17,4 @@ root.render(
   </ApolloProvider>
 );
 
-reportWebVitals();
+reportWebVitals(console.log);

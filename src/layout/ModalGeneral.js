@@ -69,8 +69,12 @@ const ModalGeneral = (props) => {
   };
   if (show) {
     return (
-      <ModalGeneralContainer>
-        <div className="overlay" onClick={onClose}></div>
+      <ModalGeneralContainer data-testid="modal-general">
+        <div
+          className="overlay"
+          onClick={onClose}
+          data-testid="modal-general-overlay"
+        ></div>
         <div className="container">{props.children}</div>
       </ModalGeneralContainer>
     );
