@@ -134,6 +134,7 @@ const AnimeList = () => {
     localStorage.setItem("collections", JSON.stringify(collectionsList));
 
     closeModalAdd();
+    setIsMultipleSelect(false);
   };
 
   const showModalCreate = () => {
