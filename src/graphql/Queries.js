@@ -53,30 +53,6 @@ export const GET_ANIME_DETAIL = gql`
         color
       }
       bannerImage
-      recommendations(page: 1, perPage: 6, sort: RATING_DESC) {
-        nodes {
-          mediaRecommendation {
-            id
-            title {
-              romaji
-              english
-              native
-              userPreferred
-            }
-            startDate {
-              year
-              month
-              day
-            }
-            coverImage {
-              extraLarge
-              large
-              medium
-              color
-            }
-          }
-        }
-      }
       episodes
       status
       source

@@ -8,7 +8,6 @@ import { mq } from "../styles/Breakpoints";
 import styled from "@emotion/styled";
 import { theme } from "../styles/Theme";
 
-import AnimeItem from "../components/AnimeItem";
 import Layout from "../layout/Layout";
 import ModalAddToCollection from "../components/ModalAddToCollection";
 import ModalCreateCollection from "../components/ModalCreateCollection";
@@ -144,24 +143,6 @@ const CollectionsContainer = styled.div`
   }
 `;
 
-const RecommendationsContainer = styled.div(
-  () => `
-    min-height: 100px;
-
-    .recommendation_list {
-      margin: 1rem 0;
-      display: grid;
-      grid-gap: .5rem;
-      grid-template-columns: repeat(2, 1fr);
-      
-      ${mq("md")} {
-        grid-gap: 1rem;
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-  `
-);
-
 const AnimeDetail = () => {
   let params = useParams();
 
@@ -183,7 +164,6 @@ const AnimeDetail = () => {
   const [description, setDescription] = useState("");
   const [bannerImage, setBannerImage] = useState("");
   const [coverImage, setCoverImage] = useState({});
-  const [recommendations, setRecommendations] = useState([]);
   const [source, setSource] = useState("");
 
   const [showModalAddCollection, setshowModalAddCollection] = useState(false);
@@ -311,7 +291,6 @@ const AnimeDetail = () => {
         coverImage,
         title,
         description,
-        recommendations,
         status,
         startDate,
         popularity,
@@ -339,8 +318,6 @@ const AnimeDetail = () => {
       setMeanScore(meanScore);
       setGenres(genres);
       setSource(source);
-
-      setRecommendations(recommendations.nodes);
     }
   }, [data]);
 
@@ -477,27 +454,6 @@ const AnimeDetail = () => {
                   ))}
                 </div>
               </CollectionsContainer>
-            ) : (
-              ""
-            )}
-
-            {recommendations.length ? (
-              <RecommendationsContainer>
-                <Subheading fontSize={14} color={theme.colors.lightGray}>
-                  Recommendations
-                </Subheading>
-                <div className="recommendation_list">
-                  {recommendations.map(({ mediaRecommendation }, index) => (
-                    <AnimeItem
-                      id={mediaRecommendation.id}
-                      title={mediaRecommendation.title}
-                      coverImage={mediaRecommendation.coverImage}
-                      startDate={mediaRecommendation.startDate}
-                      key={"recommendation-item-anime-detail-" + index}
-                    />
-                  ))}
-                </div>
-              </RecommendationsContainer>
             ) : (
               ""
             )}
