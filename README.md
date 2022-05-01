@@ -1,4 +1,15 @@
-# Getting Started with Create React App
+# Tokopedia: Software Engineer - Web Platform [Technical Test]
+
+Deployed web app is available on the following link: [Deployed Web App](https://tokopedia-tech-test.web.app/).
+
+Tech stack used:
+
+- ReactJs
+- GraphQL using Apollo Client
+- CSS-in-JS using Emotion
+- Single Page Application
+
+---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
